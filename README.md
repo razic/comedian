@@ -12,7 +12,7 @@ kubectl apply -f https://raw.githubusercontent.com/razic/comedian/master/contrib
 
 *Note:* Monitoring progress of the Kubernetes deployment, including
 load-balancer creation, is out of the scope of this tutorial. Please refer to
-the official [Kubernetes] documentation for additional information:
+the official [Kubernetes] documentation for additional information.
 
 ## Design
 
