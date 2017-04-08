@@ -31,9 +31,9 @@ func main() {
 	app.Usage = usage
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:  "socket, s",
+			Name:  "uinames-socket",
 			Value: "/var/run/uinames.sock",
-			Usage: "socket path to grpc server",
+			Usage: "socket path to uinames grpc server",
 		},
 	}
 	app.Action = func(c *cli.Context) error {
