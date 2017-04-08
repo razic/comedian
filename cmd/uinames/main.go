@@ -57,6 +57,11 @@ func (u *uinames) GetName(ctx context.Context, in *pb.GetNameRequest) (*pb.GetNa
 
 	err = json.Unmarshal(body, &resp)
 
+	if err != nil {
+		log.Fatalf("failed unmarshal response body: %v", err)
+		return nil, err
+	}
+
 	return resp, nil
 }
 
