@@ -42,7 +42,7 @@ func (u *uinames) GetName(ctx context.Context, in *pb.GetNameRequest) (*pb.GetNa
 	res, err := httpClient.Get(endpoint)
 
 	if err != nil {
-		log.Fatalf("failed to get name: %v", err)
+		log.Fatalf("failed to get api response from uinames: %v", err)
 		return nil, err
 	}
 
