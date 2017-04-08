@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+service Icndb {
+  rpc GetJoke(GetJokeRequest) returns (GetJokeResponse) {}
+}
+
+message Joke {
+  int32 id = 1;
+  string joke = 2;
+  repeated string categories = 3;
+}
+
+message GetJokeRequest {
+  string firstName = 1;
+  string lastName = 2;
+}
+
+message GetJokeResponse {
+  string type = 1;
+  Joke value = 2;
+}

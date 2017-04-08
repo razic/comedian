@@ -9,6 +9,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/razic/comedian/api/services/icndb"
+	icndbpb "github.com/razic/comedian/api/services/icndb"
 	uinamespb "github.com/razic/comedian/api/services/uinames"
 	"github.com/urfave/cli"
 	"google.golang.org/grpc"
@@ -35,6 +37,11 @@ func main() {
 			Value: "/var/run/uinames.sock",
 			Usage: "socket path to uinames grpc server",
 		},
+		cli.StringFlag{
+			Name:  "icndb-socket",
+			Value: "/var/run/icndb.sock",
+			Usage: "socket path to icndb grpc server",
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 		dialOpts := append(
@@ -43,25 +50,45 @@ func main() {
 				return net.DialTimeout("unix", addr, timeout)
 			}),
 		)
-		conn, err := grpc.Dial(c.String("socket"), dialOpts...)
+
+		uinamesConn, err := grpc.Dial(c.String("uinames-socket"), dialOpts...)
 
 		if err != nil {
-			log.Fatalf("did not connect: %v", err)
+			log.Fatalf("could not connect to uinames grpc server: %v", err)
 		}
 
-		defer conn.Close()
+		defer uinamesConn.Close()
 
-		uinames := uinamespb.NewUinamesClient(conn)
+		icndbConn, err := grpc.Dial(c.String("icndb-socket"), dialOpts...)
+
+		if err != nil {
+			log.Fatalf("could not connect to icndb grpc server: %v", err)
+		}
+
+		defer icndbConn.Close()
+
+		uinames := uinamespb.NewUinamesClient(uinamesConn)
+		icndb := icndb.NewIcndbClient(icndbConn)
 
 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			nameResp, err := uinames.GetName(context.Background(), &uinamespb.GetNameRequest{})
 
 			if err != nil {
-				fmt.Fprintf(w, "Error: %v", err)
+				fmt.Fprintf(w, "error getting name from uinames grpc: %v", err)
 				return
 			}
 
-			fmt.Fprintf(w, "Hi there, I love %s", nameResp.Name)
+			jokeResp, err := icndb.GetJoke(context.Background(), &icndbpb.GetJokeRequest{
+				FirstName: nameResp.Name,
+				LastName:  nameResp.Surname,
+			})
+
+			if err != nil {
+				fmt.Fprintf(w, "error getting joke from icndb grpc: %v", err)
+				return
+			}
+
+			fmt.Fprintf(w, jokeResp.Value.Joke)
 		})
 
 		http.ListenAndServe(":8080", nil)
