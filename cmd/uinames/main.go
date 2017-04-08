@@ -1,11 +1,15 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	pb "github.com/razic/comedian/api/services/uinames"
 	"github.com/urfave/cli"
@@ -23,16 +27,37 @@ const usage = `
 grpc wrapper for uinames api
 `
 
+const endpoint = "https://uinames.com/api/"
+
+var (
+	httpClient = http.Client{
+		Timeout: time.Duration(10 * time.Second),
+	}
+)
+
 type uinames struct{}
 
 // GetName gets a name from the uinames api
 func (u *uinames) GetName(ctx context.Context, in *pb.GetNameRequest) (*pb.GetNameResponse, error) {
-	resp := pb.GetNameResponse{
-		FirstName: "John",
-		LastName:  "Doe",
+	res, err := httpClient.Get(endpoint)
+
+	if err != nil {
+		log.Fatalf("failed to get name: %v", err)
+		return nil, err
 	}
 
-	return &resp, nil
+	body, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		log.Fatalf("failed read response body: %v", err)
+		return nil, err
+	}
+
+	resp := new(pb.GetNameResponse)
+
+	err = json.Unmarshal(body, &resp)
+
+	return resp, nil
 }
 
 func main() {
