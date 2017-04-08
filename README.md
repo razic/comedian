@@ -23,5 +23,26 @@ which is consumed by `comedian`:
 * [uinames](api/services/uinames/uinames.proto)
 * [icndb](api/services/icndb/icndb.proto)
 
+## Development
+
+You need to have the latest versions of `protoc`, and all of the Go
+dependencies in your `GOPATH`. For the purposes of this project, I chose not to
+use a dependency manager.
+
+Running `make` will create 3 executables:
+
+* `./bin/comedian`
+* `./bin/uinames`
+* `./bin/icndb`
+
+They can all be run independently of each other, and have a command line
+interface and usage information.
+
+## Caveats
+
+There was in issue with string encoding and gRPC types. I spent an hour trying
+to figure it out, to no avail. I will need to spend more time to devise a
+proper solution, instead of one of the many band-aids I could have used.
+
 [Kubernetes]: https://kubernetes.io/
 [gRPC]: http://www.grpc.io
