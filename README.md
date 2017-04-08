@@ -38,11 +38,15 @@ Running `make` will create 3 executables:
 They can all be run independently of each other, and have a command line
 interface and usage information.
 
+Or you can just run everything with `docker-compose`:
+
+```
+docker-compose up -d
+```
+
 ## Caveats
 
-There was in issue with string encoding and gRPC types. I spent an hour trying
-to figure it out, to no avail. I will need to spend more time to devise a
-proper solution, instead of one of the many band-aids I could have used.
+Does not handle special characters.
 
 [Kubernetes]: https://kubernetes.io/
 [gRPC]: http://www.grpc.io
