@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service Uinames {
+  // GetName returns a name
+  rpc GetName(GetNameRequest) returns (GetNameResponse) {}
+}
+
+message GetNameRequest {}
+
+message GetNameResponse {
+  string firstName = 1;
+  string lastName = 2;
+}
