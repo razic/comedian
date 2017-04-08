@@ -1,0 +1,29 @@
+version: '2'
+
+volumes:
+  varrun: {}
+
+services:
+  comedian:
+    build:
+      context: .
+    volumes:
+    - varrun:/var/run
+    command:
+    - bin/comedian
+    ports:
+    - 8080:8080
+  uinames:
+    build:
+      context: .
+    volumes:
+    - varrun:/var/run
+    command:
+    - bin/uinames
+  icndb:
+    build:
+      context: .
+    volumes:
+    - varrun:/var/run
+    command:
+    - bin/icndb

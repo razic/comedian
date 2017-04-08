@@ -1,0 +1,55 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: comedian
+spec:
+  type: LoadBalancer
+  selector:
+    app: comedian
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: comedian
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: comedian
+    spec:
+      volumes:
+      - name: varrun
+        emptyDir: {}
+      containers:
+      - name: comedian
+        image: razic/comedian
+        imagePullPolicy: Always
+        command:
+        - bin/comedian
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: varrun
+          mountPath: /var/run
+      - name: uinames
+        image: razic/comedian
+        imagePullPolicy: Always
+        command:
+        - bin/uinames
+        volumeMounts:
+        - name: varrun
+          mountPath: /var/run
+      - name: icndb
+        image: razic/comedian
+        imagePullPolicy: Always
+        command:
+        - bin/icndb
+        volumeMounts:
+        - name: varrun
+          mountPath: /var/run

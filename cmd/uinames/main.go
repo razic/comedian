@@ -78,6 +78,9 @@ func main() {
 		},
 	}
 	app.Action = func(c *cli.Context) error {
+		//TODO: find a better place for this
+		os.Remove(c.String("socket"))
+
 		listen, err := net.Listen("unix", c.String("socket"))
 
 		if err != nil {

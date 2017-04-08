@@ -1,7 +1,7 @@
-FROM scratch
+FROM golang:alpine
 
 MAINTAINER Zachary Kaplan <razic@viralkitty.com>
 
 ADD bin bin
 
-EXPOSE 80
+EXPOSE 8080
